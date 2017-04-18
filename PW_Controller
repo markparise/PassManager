@@ -1,0 +1,169 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import java.util.Scanner;
+
+import javax.crypto.Cipher;
+import javax.crypto.NoSuchPaddingException;
+
+import java.security.Security;
+
+
+//add the provider package
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.crypto.BlockCipher;
+import org.bouncycastle.crypto.engines.AESEngine;
+import org.bouncycastle.crypto.modes.CBCBlockCipher;
+import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import org.bouncycastle.jcajce.provider.symmetric.AES;
+
+public class PW_Controller {
+	
+	// File paths for passwd_file and master_passwd file. Change paths accordingly
+	private static String test_pw_file_path = "/Users/markparise/Documents/workspace/PasswordManager/test_passwd_file.txt";
+	private static String test_master_pw_file_path = "/Users/markparise/Documents/workspace/PasswordManager/test_master_passwd.txt";
+	private static File passwd_file;
+	private static File master_passwd_file;
+	
+	private static String masterPassword;
+	
+	private static boolean registered = false; // keep track  of whether or not user has registered
+	
+	
+	private AES.KeyGen256 keyGen = new AES.KeyGen256();
+	//private Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding", new BouncyCastleProvider());
+	
+
+	public static void main(String[] args) throws FileNotFoundException, NoSuchAlgorithmException, NoSuchPaddingException 
+	{
+		Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding", new BouncyCastleProvider());
+		
+		registered = findFiles(); // Check if user has registered by looking for files
+		System.out.println("Registered: " +registered);
+		
+		if(!registered) {
+			System.out.println("This is your first time using our password manager, please enter a master password: ");
+			Scanner input = new Scanner(System.in);
+			masterPassword = input.nextLine(); // store user input in masterPassword as unencrypted string
+			input.close();
+		}
+		else { // User has already registered, prompt them for master password
+			System.out.println("Hello, please enter the master password: ");
+			Scanner input = new Scanner(System.in);
+			masterPassword = input.nextLine(); 
+			input.close();
+		}
+	
+		 /* After master pw has been obtained from the user, need to generate two files:
+		  * "passwd_file" - will store all encrypted account information
+		  * "master_passwd" - will store a 256-byte salt followed by the master password hashed with the salt
+		  */
+		passwd_file = new File("/Users/markparise/Documents/workspace/PasswordManager/passwd_file.txt");
+		master_passwd_file = new File("/Users/markparise/Documents/workspace/PasswordManager/test_master_passwd.txt");
+		
+		
+		
+		// Wait for input commands from the user
+		boolean done = false; 
+		Scanner input = new Scanner(System.in);
+		while(!done)
+		{
+			System.out.print("Enter command: ");
+			String command = input.nextLine();
+			System.out.println();
+			
+			switch(command) {
+				case "exit":
+					done=true;
+					break;
+			
+				case "check integrity":
+					
+					break;
+				case "register account":
+					
+					break;
+				
+				case "delete account":
+					
+					break;
+				
+				case "change account":
+					
+					break;
+				
+				case "get password":
+					
+					break;
+				
+				default:
+					System.out.println("Command not recognized. Try again");
+					
+						
+			}
+		}
+		
+	}
+	
+	private static void saltPassword(String masterPassword)
+	{
+		
+	}
+	
+	// Create an AES engine in CTR mode (no padding)
+	private static Cipher encryptCipher(String IV, String key, String msg) throws NoSuchAlgorithmException, NoSuchPaddingException
+	{
+		Cipher cipher = Cipher.getInstance("AES/CTR/NoPadding", new BouncyCastleProvider());
+		byte[] keyBytes = key.getBytes();
+		//byte[] 
+		//cipher.init(Cipher.ENCRYPT_MODE, key, IV);
+		//cipher.init(Cipher.ENCRYPT_MODE)
+		return cipher;
+	}
+	
+	// Check integrity of password file and output either "PASSED!\n" or "FAILED!\n"
+	private static void check_integrity()
+	{
+		
+	}
+	
+	private static void register_account()
+	{
+		
+	}
+	
+	private static void delete_account()
+	{
+		
+	}
+	
+	private static void change_account()
+	{
+		
+	}
+	
+	private static void get_password()
+	{
+		
+	}
+	
+	/*
+	 * Look for two files named "passwd_file" and "master_passwd"
+	 * if files found and both exist, return true. 
+	 */
+	private static boolean findFiles() throws FileNotFoundException
+	{
+		passwd_file = new File(test_pw_file_path);
+		master_passwd_file = new File(test_master_pw_file_path); 
+		if(passwd_file.exists() && master_passwd_file.exists()){
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+}
